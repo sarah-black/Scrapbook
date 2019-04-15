@@ -19,3 +19,7 @@ CREATE TABLE `Scrapbook`.`User` ( `userID` INT(11) NOT NULL AUTO_INCREMENT,
                                  `password` VARCHAR(60) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                                  PRIMARY KEY (`userID`));
                                   
+
+
+Link to Web Design Moqup: https://app.moqups.com/TrCU9LFVj5/view
+Link to ER Diagram: https://www.lucidchart.com/invitations/accept/58507afc-eedb-4688-a786-958c22bf9cf7
