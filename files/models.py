@@ -1,3 +1,4 @@
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from files import db, login_manager
 from flask_login import UserMixin
@@ -5,9 +6,8 @@ from functools import partial
 from sqlalchemy import orm
 
 
-
+db = SQLAlchemy()
 db.Model.metadata.reflect(db.engine)
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -16,7 +16,7 @@ def load_user(user_id):
 #taken from 08-CRUD
 class User(db.Model, UserMixin):
     __table_args__ = {'extend_existing': True}
-    id = db.Column(db.Integer, primary_key=True)
+    userID = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
@@ -29,7 +29,7 @@ class User(db.Model, UserMixin):
 #taken from 08-CRUD
 class Post(db.Model):
      __table_args__ = {'extend_existing': True}
-     id = db.Column(db.Integer, primary_key=True)
+     postID = db.Column(db.Integer, primary_key=True)
      title = db.Column(db.String(100), nullable=False)
      date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
      content = db.Column(db.Text, nullable=False)
@@ -37,7 +37,3 @@ class Post(db.Model):
 
      def __repr__(self):
          return f"Post('{self.title}', '{self.date_posted}')"
-
-#taken from 08-CRUD
-class Dependent(db.Model):
-    __table__ = db.Model.metadata.tables['dependent']
