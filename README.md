@@ -18,6 +18,9 @@ CREATE TABLE `Scrapbook`.`User` ( `userID` INT(11) NOT NULL AUTO_INCREMENT,
                                  `image_file` VARCHAR(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                                  `password` VARCHAR(60) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                                  PRIMARY KEY (`userID`));
+                                 
+CREATE TABLE `Scrapbook`.`Contact Information` ( `ContactID` INT NOT NULL , `UserID` INT NOT NULL , `City` TEXT NULL ,
+                                               `Address` TEXT NOT NULL , `Primary_Phone` INT NOT NULL , `Secondary_Phone` INT                                                 NULL DEFAULT NULL , `Contact_Email` INT NOT NULL , PRIMARY KEY (`ContactID`))                                                 ENGINE = InnoDB;
                                   
 
 
