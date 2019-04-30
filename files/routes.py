@@ -5,7 +5,7 @@ from PIL import Image
 from flask_sqlalchemy import sqlalchemy
 from flask import render_template, url_for, flash, redirect, request, abort
 from files import app, db, bcrypt
-from files.models import User, Post, Comment, Relationship
+from files.models import User, Post
 from files.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -22,6 +22,11 @@ def home():
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')
+	
+	
+@app.route("/create_a_post")
+def create_a_post():
+    return render_template('create_a_post.html', title='Create a Post')
 
 
 #the below is from the 08-CRUD lab code
