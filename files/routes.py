@@ -5,7 +5,7 @@ from PIL import Image
 from flask_sqlalchemy import sqlalchemy
 from flask import render_template, url_for, flash, redirect, request, abort
 from files import app, db, bcrypt
-from files.models import User, Post
+from files.models import User, Post, Comment, Relationship
 from files.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from flask_login import login_user, current_user, logout_user, login_required
 
