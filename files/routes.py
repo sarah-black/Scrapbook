@@ -6,7 +6,7 @@ from flask_sqlalchemy import sqlalchemy
 from flask import render_template, url_for, flash, redirect, request, abort
 from files import app, db, bcrypt
 from files.models import User, Post, Comment, Relationship
-from files.forms import RegistrationForm, LoginForm, UpdateAccountForm,PostForm
+from files.forms import RegistrationForm, LoginForm, UpdateAccountForm,PostForm, FamilyForm
 from flask_login import login_user, current_user, logout_user, login_required
 
 from datetime import datetime
@@ -122,3 +122,15 @@ def account():
     return render_template('account.html', title='Account',
                            image_file=image_file, form=form)
 
+@app.route("/family", methods=['GET', 'POST'])
+@login_required
+def family():
+    users = User.query.all()
+    userID1 = current_user.id
+    form = FamilyForm(request.form)
+    if form.validate_on_submit():
+        relation = Relationship(userID_1=userID1, userID_2=form.fam_members.data, dtr=form.dtr.data)
+        db.session.add(relation)
+        db.session.commit()
+        return redirect(url_for('family'))
+    return render_template('my_family.html', title='My Family', form=form, posts=users)

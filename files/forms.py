@@ -63,3 +63,11 @@ class PostForm(FlaskForm):
     content = TextAreaField('Content', validators=[DataRequired()])
 
     submit = SubmitField('Post')
+
+class FamilyForm(FlaskForm):
+    def member_list(self, User):
+        user = User.query.all()
+        return user
+    fam_members = StringField('Family', validators=[DataRequired()])
+    dtr = StringField('Relationship', validators=[DataRequired()])
+    submit = SubmitField('Relationship')
