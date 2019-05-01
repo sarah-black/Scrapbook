@@ -9,6 +9,20 @@ from files.models import User, Post, Comment, Relationship
 from wtforms.fields.html5 import DateField
 
 
+users = db.session.query(User.id).distinct()
+assignQuery = User.query.with_entities(User.id).distinct()
+relation_id = db.session.query(Relationship.relation_id).distinct()
+
+
+myChoicesAssign2 = [(row[0],row[0]) for row in assignQuery]
+results2=list()
+for row in assignQuery:
+    rowDict=row._asdict()
+    results2.append(rowDict)
+
+myChoicesRELAT = [(row['id'],row['id']) for row in results2]
+
+
 class RegistrationForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(), Length(min=2, max=20)])
@@ -68,6 +82,14 @@ class FamilyForm(FlaskForm):
     def member_list(self, User):
         user = User.query.all()
         return user
-    fam_members = StringField('Family', validators=[DataRequired()])
+    fam_members = SelectField('RChoices', choices=myChoicesRELAT)
+    relation_id = relation_id
     dtr = StringField('Relationship', validators=[DataRequired()])
-    submit = SubmitField('Relationship')
+    submit = SubmitField('Define Your Relationship!')
+
+class FamilyUpdateForm(FlaskForm):
+    relation_id = HiddenField("")
+    username=StringField('User Name:', validators=[DataRequired()])
+    fam_members2 = SelectField("Family:", choices=myChoicesRELAT)  # myChoices defined at top
+
+    submit = SubmitField('Update this relation')

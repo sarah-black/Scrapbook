@@ -6,7 +6,7 @@ from flask_sqlalchemy import sqlalchemy
 from flask import render_template, url_for, flash, redirect, request, abort
 from files import app, db, bcrypt
 from files.models import User, Post, Comment, Relationship
-from files.forms import RegistrationForm, LoginForm, UpdateAccountForm,PostForm, FamilyForm
+from files.forms import RegistrationForm, LoginForm, UpdateAccountForm,PostForm, FamilyForm, FamilyUpdateForm
 from flask_login import login_user, current_user, logout_user, login_required
 
 from datetime import datetime
@@ -127,10 +127,35 @@ def account():
 def family():
     users = User.query.all()
     userID1 = current_user.id
+    relationship = Relationship.query.all()
     form = FamilyForm(request.form)
     if form.validate_on_submit():
         relation = Relationship(userID_1=userID1, userID_2=form.fam_members.data, dtr=form.dtr.data)
         db.session.add(relation)
         db.session.commit()
+        flash('You are a family! Lol Cool', 'success')
         return redirect(url_for('family'))
-    return render_template('my_family.html', title='My Family', form=form, posts=users)
+    return render_template('my_family.html', title='My Family', form=form, posts=posts, relationship=relationship)
+
+@app.route("/family/<relation_id>/update", methods=['GET', 'POST'])
+@login_required
+def update_fam(relation_id):
+    fam = Relationship.query.get_or_404()
+    currentRel = fam.relation_id
+
+    form = FamilyUpdateForm(request.form)
+    if form.validate_on_submit():          # notice we are are not passing the dnumber from the form
+        if currentRel !=form.relation_id.data:
+            fam.relation_id=form.relation_id.data
+        fam.dtr=form.dtr.data
+        db.session.commit()
+        flash('Your relationship has been updated!', 'success')
+        return redirect(url_for('update_fam', relation_id=relation_id))
+    elif request.method == 'GET':              # notice we are not passing the dnumber to the form
+
+        form.relation_id.data = dept.relation_id
+        form.userID_1.data = dept.userID_1
+        form.userID_2.data = dept.userID_2
+        form.dtr.data = dept.dtr
+    return render_template('familyUpdate.html', title='Update Fam',
+                           form=form, legend='Update Fam')
