@@ -6,11 +6,7 @@ from flask_sqlalchemy import sqlalchemy
 from flask import render_template, url_for, flash, redirect, request, abort
 from files import app, db, bcrypt
 from files.models import User, Post, Comment, Relationship
-<<<<<<< HEAD
-from files.forms import RegistrationForm, LoginForm, UpdateAccountForm,PostForm, FamilyForm, FamilyUpdateForm
-=======
-from files.forms import RegistrationForm, LoginForm, UpdateAccountForm,PostForm,PostUpdateForm
->>>>>>> dev
+from files.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, PostUpdateForm, FamilyForm, FamilyUpdateForm
 from flask_login import login_user, current_user, logout_user, login_required
 
 from datetime import datetime
@@ -89,6 +85,13 @@ def save_picture(form_picture):
 def posts():
     posts = Post.query.all()
     return render_template('home.html', posts=posts)
+
+@app.route("/fam", methods=['GET', 'POST'])
+@login_required
+def fam():
+    fam = User.query.join(Relationship, User.id==Relationship.userID_1) \
+    .add_columns(Relationship.userID_1,Relationship.relation_id,Relationship.dtr,Relationship.userID_2)
+    return render_template('familyUpdate.html', posts=fam)
 
 @app.route("/newpost", methods=['GET', 'POST'])
 @login_required

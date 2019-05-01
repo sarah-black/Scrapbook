@@ -88,8 +88,7 @@ class FamilyForm(FlaskForm):
     def member_list(self, User):
         user = User.query.all()
         return user
-    fam_members = SelectField('RChoices', choices=myChoicesRELAT)
-    relation_id = relation_id
+    fam_members = StringField('RChoices', validators=[DataRequired()])
     dtr = StringField('Relationship', validators=[DataRequired()])
     submit = SubmitField('Define Your Relationship!')
 

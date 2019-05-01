@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
+<article class="media content-section">
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
@@ -17,26 +18,9 @@
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
         </form>
-        <form method="POST" action="">
-            {{ form.hidden_tag() }}
-            <fieldset class="form-group">
-                <div class="media-body">
-                        <div class="article-metadata">
-                          <a class="mr-2" href="#">{{ relationship.relation_id }}</a>
-                          {% if relationship.userID_1 == current_user %}
-                            <div>
-                              <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('family', relation_id = relationship.relation_id) }}">Update</a>
-                              <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                            </div>
-                          {% endif %}
-                        </div>
-                        <h2 class="article-title">{{ relationship.userID_2 }}</h2>
-                        <p class="article-content">{{ relationship.dtr }}</p>
-                      </div>
-            </fieldset>
     </div>
     <div class="border-top pt-3">
     </div>
 </form>
-
+</article>
 {% endblock content %}
