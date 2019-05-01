@@ -6,7 +6,7 @@ from flask_sqlalchemy import sqlalchemy
 from flask import render_template, url_for, flash, redirect, request, abort
 from files import app, db, bcrypt
 from files.models import User, Post, Comment, Relationship
-from files.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from files.forms import RegistrationForm, LoginForm, UpdateAccountForm,PostForm
 from flask_login import login_user, current_user, logout_user, login_required
 
 from datetime import datetime
@@ -15,8 +15,7 @@ from datetime import datetime
 @app.route("/")
 @app.route("/home")
 def home():
-    posts = Post.query.all()
-    return render_template('home.html', posts=posts)
+    return render_template('home.html',title='Home')
 
 
 @app.route("/about")
@@ -24,9 +23,11 @@ def about():
     return render_template('about.html', title='About')
 
 
+
+
 #the below is from the 08-CRUD lab code
-#creates an account and hashes their password
 @app.route("/register", methods=['GET', 'POST'])
+#creates an account and hashes their password
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
@@ -78,6 +79,26 @@ def save_picture(form_picture):
     i.thumbnail(output_size)
     i.save(picture_path)
     return picture_fn
+
+@app.route("/posts", methods=['GET', 'POST'])
+@login_required
+def posts():
+    posts = Post.query.all()
+    return render_template('home.html', posts=posts)
+
+@app.route("/newpost", methods=['GET', 'POST'])
+@login_required
+def newpost():
+    userID=current_user.id
+    author=current_user.username
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(user_id=userID ,title=form.title.data, content=form.content.data,author=author)
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('posts'))
+    return render_template('create_post.html', title='New Post', form=form)
+
 
 
 #the below is from the 08-CRUD lab code
