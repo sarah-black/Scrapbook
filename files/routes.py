@@ -6,7 +6,7 @@ from flask_sqlalchemy import sqlalchemy
 from flask import render_template, url_for, flash, redirect, request, abort
 from files import app, db, bcrypt
 from files.models import User, Post, Comment, Relationship
-from files.forms import RegistrationForm, LoginForm, UpdateAccountForm,PostForm
+from files.forms import RegistrationForm, LoginForm, UpdateAccountForm,PostForm,PostUpdateForm
 from flask_login import login_user, current_user, logout_user, login_required
 
 from datetime import datetime
@@ -71,9 +71,9 @@ def logout():
 #the below is from the 08-CRUD lab code
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_picture.filename)
+    _, f_ext = os.path.splitext(form_picture)
     picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+    picture_path = os.path.join(app.root_path, 'static/posts', picture_fn)
     output_size = (125, 125)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
@@ -91,13 +91,57 @@ def posts():
 def newpost():
     userID=current_user.id
     author=current_user.username
+    image_file = None
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(user_id=userID ,title=form.title.data, content=form.content.data,author=author)
+        if form.image.data:
+            image_file = save_picture(form.image.data)
+        post = Post(user_id=userID ,title=form.title.data, content=form.content.data,author=author,image=image_file)
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('posts'))
     return render_template('create_post.html', title='New Post', form=form)
+
+@app.route("/posts/<id>",methods=["GET","POST"])
+@login_required
+def changePost(id):
+    post = Post.query.get_or_404([id])
+    return render_template("update_post.html", title=str(post.title)+"_"+str(post.content),post=post,now=datetime.utcnow())
+
+
+@app.route("/posts/<id>/update",methods=["GET","POST"])
+@login_required
+def update_posts(id):
+
+    post = Post.query.get_or_404([id])
+    currentTitle = post.title
+    currentContent = post.content
+    print("assign")
+    form = PostUpdateForm()
+    if form.validate_on_submit():
+        print("Test")
+        if currentTitle != form.title.data:
+            post.title = form.title.data
+        if currentContent != form.content.data:
+            post.content = form.content.data
+        db.session.commit()
+        flash('The Assignment has been updated!', 'success')
+        return redirect(url_for('posts'))
+    elif request.method == 'GET':              # notice we are not passing the dnumber to the form
+
+        form.title.data = post.title
+        form.content.data = post.content
+
+    return render_template('create_post.html', title='Update Post',
+                           form=form, legend='Update Post')
+@app.route("/posts/<id>/delete", methods=['POST'])
+@login_required
+def delete_post(id):
+    post = Post.query.get_or_404(id)
+    db.session.delete(post)
+    db.session.commit()
+    flash('The Post has been deleted!', 'success')
+    return redirect(url_for('home'))
 
 
 
@@ -107,9 +151,6 @@ def newpost():
 def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
-        if form.picture.data:
-            picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
@@ -118,7 +159,6 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
-    image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account',
-                           image_file=image_file, form=form)
+                         form=form)
 

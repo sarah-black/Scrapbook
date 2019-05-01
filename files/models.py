@@ -35,8 +35,6 @@ class Post(db.Model):
     content = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     author = db.Column(db.String(20),unique=True,nullable=False)
-    commentz = db.relationship('Comment', backref=("comment_IDPOST"), foreign_keys=('comment.c.post_id'), lazy=True)
-
 
     def __repr__(self):
         return '<Post {}>'.format(self.id)
