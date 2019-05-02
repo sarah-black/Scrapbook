@@ -1,12 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
     {% for post in posts %}
+      {% if current_user.id == post.userID_1 %}
         <article class="media content-section">
           <div class="media-body">
-
-            <h2><a class="article-title" >{{ post.userID_2 }}</a></h2>
+            <h2><a class="article-title" >{{ post.username }}</a></h2>
             <p class="article-content">{{ post.dtr }}</p>
-              <p class="article-author">Made By: {{ post.userID_1 }}</p>
+
+              <p class="article-author"> Who Added Relation: {{ current_user.username }}</p>
+            {% endif %}
           </div>
         </article>
     {% endfor %}

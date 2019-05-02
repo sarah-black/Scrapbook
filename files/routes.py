@@ -89,8 +89,9 @@ def posts():
 @app.route("/fam", methods=['GET', 'POST'])
 @login_required
 def fam():
-    fam = User.query.join(Relationship, User.id==Relationship.userID_1) \
-    .add_columns(Relationship.userID_1,Relationship.relation_id,Relationship.dtr,Relationship.userID_2)
+
+    fam = User.query.join(Relationship, User.id==Relationship.userID_2) \
+    .add_columns(Relationship.userID_1,Relationship.relation_id,Relationship.dtr,Relationship.userID_2, User.username)
     return render_template('familyUpdate.html', posts=fam)
 
 @app.route("/newpost", methods=['GET', 'POST'])
