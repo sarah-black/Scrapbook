@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
+<h1 class="text-center text-info"> <strong><em>Family Members </em></strong></h1> <br>
     {% for post in posts %}
       {% if current_user.id == post.userID_1 %}
         <article class="media content-section">
