@@ -84,7 +84,7 @@ def save_picture(form_picture):
 @login_required
 def posts():
     posts = Post.query.all()
-    return render_template('home.html', posts=posts)
+    return render_template('post.html', posts=posts)
 
 @app.route("/fam", methods=['GET', 'POST'])
 @login_required
